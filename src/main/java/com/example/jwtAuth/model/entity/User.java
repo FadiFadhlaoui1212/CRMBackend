@@ -1,6 +1,7 @@
 package com.example.jwtAuth.model.entity;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,9 +30,12 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
+
+
     public String getEmail(){
         return email;
     }
+
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -48,10 +52,17 @@ public class User implements UserDetails {
                 ).collect(Collectors.toList());
     }
 
+
+
+
     @Override
     public String getUsername() {
         return email;
     }
+
+    @Override
+    public String getPassword() {return password;}
+
 
     @Override
     public boolean isAccountNonExpired() {

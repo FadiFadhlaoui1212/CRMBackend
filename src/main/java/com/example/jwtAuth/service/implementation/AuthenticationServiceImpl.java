@@ -21,22 +21,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
-
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
-    private  UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private  RoleRepository roleRepository;
 
     @Autowired
     private  JwtService jwtService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private  PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;
