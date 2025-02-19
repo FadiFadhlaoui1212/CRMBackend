@@ -1,11 +1,17 @@
 server:
-  port: 8080
+  port: 9090
 
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
   datasource:
-    url: jdbc:mysql://localhost:3306/auth
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://localhost:3306/CRM
+    username: root
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -17,6 +23,6 @@ spring:
 
 # security
 jwt:
-  secret: ${SECRET_KEY}
-  expiration: ${EXPIRATION_TIME}
+  secret: "2y6gxzIUwMJKwF9L1tEsl8MdAop5k93TXxF35UlKq4gq"
+  expiration: 86400000  # 1 day in milliseconds
 

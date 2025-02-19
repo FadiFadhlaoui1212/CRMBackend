@@ -1,8 +1,12 @@
 package com.example.jwtAuth.config;
 
 import com.example.jwtAuth.auth.JwtAuthenticationFilter;
+import com.example.jwtAuth.repository.RoleRepository;
 import com.example.jwtAuth.service.implementation.UserDetailsServiceImpl;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.filters.CorsFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,17 +17,29 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import static org.springframework.http.HttpMethod.GET;
+import java.util.List;
+
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final UserDetailsServiceImpl userDetailsService;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    private  UserDetailsServiceImpl userDetailsService;
+
+
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
@@ -33,12 +49,18 @@ public class SecurityConfiguration {
         AuthenticationManager authenticationManager = builder.build();
 
         return http
+                .cors().and()
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
                 .antMatchers(GET, "/api/v1/testAdmission/allUsers").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(GET, "/api/v1/testAdmission/onlyAdmin").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers(POST, "/api/contact/create").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers(GET, "/api/contact/contacts").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .antMatchers(GET, "/api/contact/delete/{id}").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .antMatchers(PUT, "/api/contact/update/{id}").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers("/api/v1/auth/**").permitAll()
+                .antMatchers(POST, "/api/contact/{id}/upload-picture").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
@@ -47,6 +69,19 @@ public class SecurityConfiguration {
                 .authenticationManager(authenticationManager)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {  // ✅ Fixed CORS Configuration
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:4200")); // ✅ Allow Angular Frontend
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
 }

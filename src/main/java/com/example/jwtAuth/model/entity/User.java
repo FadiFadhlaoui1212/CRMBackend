@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @Builder
 @Table(name = "users")
 public class User implements UserDetails {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,6 +28,10 @@ public class User implements UserDetails {
     private String lastname;
     private String email;
     private String password;
+
+    public String getEmail(){
+        return email;
+    }
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

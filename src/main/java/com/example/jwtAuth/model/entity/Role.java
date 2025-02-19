@@ -20,4 +20,9 @@ public class Role {
     @Enumerated(value = EnumType.STRING)
     private RoleEnum name;
 
+    public RoleEnum getName(){
+        return name;
+    }
+
+
 }
