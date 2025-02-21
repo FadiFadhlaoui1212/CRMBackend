@@ -9,6 +9,7 @@ import com.example.jwtAuth.repository.ContactRepository;
 import com.example.jwtAuth.service.implementation.ContactServiceImpl;
 import com.example.jwtAuth.service.implementation.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -88,15 +89,29 @@ public class ContactController {
      }
 
      @PostMapping("/{id}/upload-picture")
-     public ResponseEntity<String> uploadPicture(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
+     public ResponseEntity<String> uploadPicture(@PathVariable Long id, @RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
          Contact contact = contactRepository.findById(id)
                  .orElseThrow(() -> new RuntimeException("Contact not found"));
+         String token = request.getHeader("Authorization").substring(7);
+         String username = jwtService.extractUsername(token);
+         if (Objects.equals(contact.getUser().getEmail(), username)){
+             contact.setProfilePicture(file.getBytes());
+             contactRepository.save(contact);
+             return ResponseEntity.ok("Profile picture uploaded successfully!");
+         }
+         else {
+             return ResponseEntity.ok("You cannot upload for this contact since you are the owner");
+         }
+    }
 
-         contact.setProfilePicture(file.getBytes());
-         contactRepository.save(contact);
-
-         return ResponseEntity.ok("Profile picture uploaded successfully!");
-     }
+    @GetMapping("/{id}/get-picture")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable Long id) throws IOException {
+        Contact contact = contactRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Contact not found"));
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG) // Adjust content type if needed (PNG, etc.)
+                .body(contact.getProfilePicture());
+    }
 
 
 

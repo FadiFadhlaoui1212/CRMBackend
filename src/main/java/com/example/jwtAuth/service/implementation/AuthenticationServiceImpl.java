@@ -70,9 +70,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 );
         String token = jwtService.generateToken(authentication);
 
-        return AuthenticationResponse.builder()
-                .token(token)
-                .build();
+        return new AuthenticationResponse(token);
+
+
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -88,9 +88,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         User user = (User) authentication.getPrincipal();
 
-        return AuthenticationResponse.builder()
-                .token(token)
-                .build();
+        return new AuthenticationResponse(token);
     }
 
 }

@@ -5,10 +5,10 @@ import org.hibernate.hql.internal.classic.Parser;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class AuthenticationResponse {
     private String token;
+
+
     }
 
