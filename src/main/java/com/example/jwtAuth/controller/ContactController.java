@@ -88,6 +88,25 @@ public class ContactController {
         }
      }
 
+     @DeleteMapping("/delete")
+     public ResponseEntity<Map<String, String>> deleteContacts(@RequestBody List<Long> ids, HttpServletRequest request){
+         String token = request.getHeader("Authorization").substring(7);
+         String username = jwtService.extractUsername(token);
+         List<Contact> contactsToDelete = contactServiceImpl.findContactsByIds(ids);
+         Map<String, String> response = new HashMap<>();
+         for (Contact contact : contactsToDelete) {
+             if (!Objects.equals(contact.getUser().getEmail(), username)){
+                 response.put("message", "You are not the owner of "+ contact.getFirstName() + " " + contact.getLastName());
+                 return ResponseEntity.ok(response);
+             }
+
+         }
+         contactServiceImpl.deleteContacts(ids);
+         response.put("message", "The accounts have been deleted successfully !!!");
+         return ResponseEntity.ok(response);
+     }
+
+
      @PostMapping("/{id}/upload-picture")
      public ResponseEntity<String> uploadPicture(@PathVariable Long id, @RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
          Contact contact = contactRepository.findById(id)
@@ -112,6 +131,8 @@ public class ContactController {
                 .contentType(MediaType.IMAGE_JPEG) // Adjust content type if needed (PNG, etc.)
                 .body(contact.getProfilePicture());
     }
+
+
 
 
 

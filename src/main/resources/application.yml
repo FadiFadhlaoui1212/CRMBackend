@@ -9,9 +9,9 @@ spring:
       max-file-size: 200MB
       max-request-size: 215MB
   datasource:
-    url: jdbc:mysql://localhost:3306/CRM
+    url: jdbc:mysql://localhost:3306/crmdb
     username: root
-    password: root
+    password: fadizoe1212
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

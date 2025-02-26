@@ -11,6 +11,8 @@ public interface ContactService {
 
     void deleteContact(Long ContactId);
 
+    void deleteContacts(List<Long> ids);
+
 
 
 }
