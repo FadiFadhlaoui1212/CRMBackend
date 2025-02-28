@@ -62,5 +62,13 @@ public class ContactServiceImpl implements ContactService {
         contactRepository.save(contactToUpdate);
     }
 
+    public List<Contact> findContactsByIds(List<Long> ids){
+        return contactRepository.findContactsByIds(ids);
+    }
+
+    public void deleteContacts(List<Long> ids){
+        contactRepository.deleteContactsByIds(ids);
+    }
+
 
 }

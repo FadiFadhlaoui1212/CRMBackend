@@ -6,6 +6,7 @@ import com.example.jwtAuth.model.enums.TitleEnum;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Setter
@@ -48,6 +49,7 @@ public class Contact {
     private int zipCode;
 
     private String state;
+
 
     public void setProfilePicture(byte[] profilePicture){
         this.profilePicture = profilePicture;

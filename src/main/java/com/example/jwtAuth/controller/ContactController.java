@@ -71,12 +71,12 @@ public class ContactController {
         }
     }
 
-     @PutMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Map<String, String>> updateContact(@PathVariable("id") Long id, @RequestBody ContactUpdateDTO contact, HttpServletRequest request){
         String token = request.getHeader("Authorization").substring(7);
         String username = jwtService.extractUsername(token);
         Contact contactToUpdate = contactServiceImpl.getContactById(id);
-         Map<String, String> response = new HashMap<>();
+        Map<String, String> response = new HashMap<>();
         if (Objects.equals(contactToUpdate.getUser().getEmail(), username)){
             contactServiceImpl.updateContact(id, contact);
             response.put("message", "The contact has been updated successfully !!!");
@@ -86,22 +86,41 @@ public class ContactController {
             response.put("message","You cannot update this contact since you are not the owner !!!");
             return ResponseEntity.ok(response);
         }
-     }
+    }
 
-     @PostMapping("/{id}/upload-picture")
-     public ResponseEntity<String> uploadPicture(@PathVariable Long id, @RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
-         Contact contact = contactRepository.findById(id)
-                 .orElseThrow(() -> new RuntimeException("Contact not found"));
-         String token = request.getHeader("Authorization").substring(7);
-         String username = jwtService.extractUsername(token);
-         if (Objects.equals(contact.getUser().getEmail(), username)){
-             contact.setProfilePicture(file.getBytes());
-             contactRepository.save(contact);
-             return ResponseEntity.ok("Profile picture uploaded successfully!");
-         }
-         else {
-             return ResponseEntity.ok("You cannot upload for this contact since you are the owner");
-         }
+    @DeleteMapping("/delete")
+    public ResponseEntity<Map<String, String>> deleteContacts(@RequestBody List<Long> ids, HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        String username = jwtService.extractUsername(token);
+        List<Contact> contactsToDelete = contactServiceImpl.findContactsByIds(ids);
+        Map<String, String> response = new HashMap<>();
+        for (Contact contact : contactsToDelete) {
+            if (!Objects.equals(contact.getUser().getEmail(), username)){
+                response.put("message", "You are not the owner of "+ contact.getFirstName() + " " + contact.getLastName());
+                return ResponseEntity.ok(response);
+            }
+
+        }
+        contactServiceImpl.deleteContacts(ids);
+        response.put("message", "The accounts have been deleted successfully !!!");
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PostMapping("/{id}/upload-picture")
+    public ResponseEntity<String> uploadPicture(@PathVariable Long id, @RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
+        Contact contact = contactRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Contact not found"));
+        String token = request.getHeader("Authorization").substring(7);
+        String username = jwtService.extractUsername(token);
+        if (Objects.equals(contact.getUser().getEmail(), username)){
+            contact.setProfilePicture(file.getBytes());
+            contactRepository.save(contact);
+            return ResponseEntity.ok("Profile picture uploaded successfully!");
+        }
+        else {
+            return ResponseEntity.ok("You cannot upload for this contact since you are the owner");
+        }
     }
 
     @GetMapping("/{id}/get-picture")
@@ -112,6 +131,8 @@ public class ContactController {
                 .contentType(MediaType.IMAGE_JPEG) // Adjust content type if needed (PNG, etc.)
                 .body(contact.getProfilePicture());
     }
+
+
 
 
 
