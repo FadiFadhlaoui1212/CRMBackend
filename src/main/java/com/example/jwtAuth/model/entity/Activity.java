@@ -22,7 +22,7 @@ public class Activity {
 
     private Date date;
 
-    private ActivityEnum activity;
+    private ActivityEnum type;
 
     @ManyToMany
     @JoinTable(
@@ -34,10 +34,32 @@ public class Activity {
 
     private String subject;
 
-    private String Note;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String note;
+
+    @ManyToOne
+    @JoinColumn(name="activityOwner", nullable = false)
+    private Contact contact;
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Document> documents;
+
+    public void setDate(Date date){
+        this.date = date;
+    }
+
+    public void setParticipants(List<Contact> participants){
+        this.participants = participants;
+    }
+
+    public void setSubject(String subject){
+        this.subject = subject;
+    }
+
+    public void setNote(String note){
+        this.note = note;
+    }
 
 
 }

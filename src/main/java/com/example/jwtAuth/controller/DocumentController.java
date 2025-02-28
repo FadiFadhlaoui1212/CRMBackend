@@ -30,6 +30,14 @@ public class DocumentController {
         return ResponseEntity.ok("The Document has been removed successfully");
     }
 
+    @DeleteMapping("/documents/delete")
+    public ResponseEntity<String> deleteDocumentsByIds(@RequestBody List<Long> ids){
+        documentService.deleteDocumentsByIds(ids);
+        return ResponseEntity.ok("The Documents have been removed successfully");
+    }
+
+
+
     @GetMapping("/documents/{id}")
     public ResponseEntity<List<Document>> findDocumentsByActivityId(@PathVariable("id") Long id){
         List<Document> documents = documentService.findDocumentsByActivityId(id);

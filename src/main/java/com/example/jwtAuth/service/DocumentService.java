@@ -12,5 +12,7 @@ public interface DocumentService {
 
     List<Document> findDocumentsByActivityId(Long id);
 
+    void deleteDocumentsByIds(List<Long> ids);
+
 
 }

@@ -9,6 +9,9 @@ import java.util.List;
 
 public interface DocumentRepository extends JpaRepository<Document, Long> {
 
-    @Query("SELECT d FROM Document d WHERE d.activity_id =: id")
+    @Query("SELECT d FROM Document d WHERE d.activity.id = :id")
     List<Document> findDocumentsByActivityId(@Param("id") Long id);
+
+    @Query("SELECT d FROM Document d WHERE d.id in :ids")
+    public void deleteDocumentsByIds(@Param("ids") List<Long> ids);
 }

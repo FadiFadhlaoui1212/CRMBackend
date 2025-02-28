@@ -26,4 +26,8 @@ public class DocumentServiceImpl implements DocumentService {
         List<Document> documents = documentRepository.findDocumentsByActivityId(id);
         return documents;
     }
+
+    public void deleteDocumentsByIds(List<Long> ids){
+        documentRepository.deleteDocumentsByIds(ids);
+    }
 }
