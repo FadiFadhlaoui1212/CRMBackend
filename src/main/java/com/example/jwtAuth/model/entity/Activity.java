@@ -38,9 +38,6 @@ public class Activity {
     @Column(columnDefinition = "TEXT")
     private String note;
 
-    @ManyToOne
-    @JoinColumn(name="activityOwner", nullable = false)
-    private Contact contact;
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Document> documents;
@@ -59,6 +56,10 @@ public class Activity {
 
     public void setNote(String note){
         this.note = note;
+    }
+
+    public List<Contact> getParticipants(){
+        return participants;
     }
 
 

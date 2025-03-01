@@ -14,5 +14,7 @@ public interface DocumentService {
 
     void deleteDocumentsByIds(List<Long> ids);
 
+    Document getDocumentById(Long id);
+
 
 }

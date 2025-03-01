@@ -61,6 +61,8 @@ public class SecurityConfiguration {
                 .antMatchers(PUT, "/api/contact/update/{id}").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers(POST, "/api/contact/{id}/upload-picture").permitAll()
+                .antMatchers("/api/contact/**").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers("/api/document/**").hasAnyAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()

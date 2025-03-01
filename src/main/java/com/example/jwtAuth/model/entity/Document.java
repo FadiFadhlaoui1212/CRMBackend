@@ -26,4 +26,16 @@ public class Document {
     @ManyToOne
     @JoinColumn(name = "activity_id", nullable = false)
     private Activity activity;
+
+    public Long getId(){
+        return id;
+    }
+
+    public String getFileName(){
+        return fileName;
+    }
+
+    public byte[] getData(){
+        return data;
+    }
 }

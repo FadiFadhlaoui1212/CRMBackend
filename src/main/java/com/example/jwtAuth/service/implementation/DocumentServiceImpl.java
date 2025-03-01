@@ -30,4 +30,9 @@ public class DocumentServiceImpl implements DocumentService {
     public void deleteDocumentsByIds(List<Long> ids){
         documentRepository.deleteDocumentsByIds(ids);
     }
+
+    public Document getDocumentById(Long id){
+        return documentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Document not found with id: " + id));
+    }
 }
