@@ -38,4 +38,10 @@ public class Document {
     public byte[] getData(){
         return data;
     }
+
+    public void setFileName(String fileName){this.fileName = fileName;}
+
+    public void setData(byte[] data){this.data = data;}
+
+    public void setActivity(Activity activity){this.activity = activity;}
 }

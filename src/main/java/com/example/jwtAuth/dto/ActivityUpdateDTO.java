@@ -16,18 +16,12 @@ public class ActivityUpdateDTO {
 
     private Date date;
 
-    private List<Contact> participants;
-
     private String subject;
 
     private String note;
 
     public Date getDate(){
         return date;
-    }
-
-    public List<Contact> getParticipants(){
-        return participants;
     }
 
     public String getSubject(){

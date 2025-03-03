@@ -32,6 +32,7 @@ public class Activity {
     )
     private List<Contact> participants;
 
+    @Column(unique = true)
     private String subject;
 
     @Lob

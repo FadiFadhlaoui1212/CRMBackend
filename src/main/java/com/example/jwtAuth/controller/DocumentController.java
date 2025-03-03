@@ -1,16 +1,22 @@
 package com.example.jwtAuth.controller;
 
 import com.example.jwtAuth.dto.DocumentName;
+import com.example.jwtAuth.model.entity.Activity;
 import com.example.jwtAuth.model.entity.Document;
+import com.example.jwtAuth.service.implementation.ActivityServiceImpl;
 import com.example.jwtAuth.service.implementation.DocumentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static io.jsonwebtoken.Jwts.header;
 
@@ -22,12 +28,26 @@ public class DocumentController {
     @Autowired
     DocumentServiceImpl documentService;
 
-    @PostMapping("/create")
-    public ResponseEntity<String> createDocuments(@RequestBody List<Document> documents){
-        for (Document document: documents){
-            documentService.createDocument(document);
+    @Autowired
+    ActivityServiceImpl activityService;
+
+    @PostMapping("/create/{activityId}")
+    public ResponseEntity<Map<String, String>> createDocuments(@RequestParam("files") MultipartFile[] files, @PathVariable("activityId") Long activityId){
+        try {
+            Activity activity = activityService.getActivityById(activityId);
+            for (MultipartFile file: files){
+                Document document = new Document();
+                document.setFileName(file.getOriginalFilename());
+                document.setData(file.getBytes());
+                document.setActivity(activity);
+                documentService.createDocument(document);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading file data", e);
         }
-        return ResponseEntity.ok("The Documents have been added successfully");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Documents have been added successfully" );
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -37,9 +57,11 @@ public class DocumentController {
     }
 
     @DeleteMapping("/documents/delete")
-    public ResponseEntity<String> deleteDocumentsByIds(@RequestBody List<Long> ids){
+    public ResponseEntity<Map<String, String>> deleteDocumentsByIds(@RequestBody List<Long> ids){
         documentService.deleteDocumentsByIds(ids);
-        return ResponseEntity.ok("The Documents have been removed successfully");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Documents have been deleted successfully" );
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/documents/{id}")

@@ -6,13 +6,16 @@ import lombok.*;
 @Getter
 @Setter
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class DocumentName {
 
     private Long id;
 
     private String fileName;
+
+    public DocumentName(Long id, String fileName){
+        this.id = id;
+        this.fileName = fileName;
+    }
 
 
 }
